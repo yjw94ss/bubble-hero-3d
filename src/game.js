@@ -418,128 +418,189 @@
 
   /* ===================== 4. 角色 ===================== */
   const MATS = {
-    skin: new THREE.MeshLambertMaterial({ color: 0xffd7b4 }),
-    shirt: new THREE.MeshLambertMaterial({ color: 0x62c8ff }),
-    pants: new THREE.MeshLambertMaterial({ color: 0x3f7fd6 }),
+    skin: new THREE.MeshLambertMaterial({ color: 0xffd8b4 }),
+    shirt: new THREE.MeshLambertMaterial({ color: 0x6fd3ff }),
+    pants: new THREE.MeshLambertMaterial({ color: 0x3f6fd6 }),
     hat: new THREE.MeshLambertMaterial({ color: 0xff6b8a }),
-    shoe: new THREE.MeshLambertMaterial({ color: 0x53407a }),
-    eye: new THREE.MeshBasicMaterial({ color: 0x2b2440 }),
+    band: new THREE.MeshLambertMaterial({ color: 0xfff2e2 }),
+    scarf: new THREE.MeshLambertMaterial({ color: 0xffd23f }),
+    pack: new THREE.MeshLambertMaterial({ color: 0xff8f6b }),
+    shoe: new THREE.MeshLambertMaterial({ color: 0x584a7d }),
+    sole: new THREE.MeshLambertMaterial({ color: 0xe9e3f7 }),
+    eye: new THREE.MeshBasicMaterial({ color: 0x2f2742 }),
     white: new THREE.MeshBasicMaterial({ color: 0xffffff }),
     cheek: new THREE.MeshLambertMaterial({ color: 0xff9aae }),
+    mouth: new THREE.MeshLambertMaterial({ color: 0x7a3046 }),
+    gun: new THREE.MeshLambertMaterial({ color: 0xffc93c }),
+    gunRing: new THREE.MeshLambertMaterial({ color: 0x7fe3ff, emissive: 0x2ec6f0, emissiveIntensity: 0.45 }),
+    tank: new THREE.MeshLambertMaterial({ color: 0xbff0ff, emissive: 0x7fe3ff, emissiveIntensity: 0.3, transparent: true, opacity: 0.85 }),
   };
 
+  /* 小勇士：圆头 + 毛线帽 + 围巾 + 背带裤 + 玩具泡泡枪
+     比例约 2.35 单位高，脚底在 y=0 */
   function buildPlayer() {
     const root = new THREE.Group();
     const body = new THREE.Group();
     root.add(body);
 
-    const torso = new THREE.Mesh(new THREE.SphereGeometry(0.5, 14, 12), MATS.shirt);
-    torso.position.y = 0.95;
-    torso.scale.set(1, 1.08, 0.92);
+    // ---------- 躯干（胶囊体，有肩有胯，不再是一个球） ----------
+    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.38, 0.20, 8, 16), MATS.shirt);
+    torso.position.y = 0.98;
+    torso.scale.set(1.0, 1.0, 0.86);
     body.add(torso);
 
-    const belly = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), MATS.pants);
-    belly.position.set(0.16, 0.78, 0);
-    belly.scale.set(0.9, 1.0, 0.95);
-    body.add(belly);
-
-    // 头（略微转向镜头，方便看到表情）
-    const head = new THREE.Group();
-    head.position.set(0.02, 1.72, 0);
-    head.rotation.y = -0.62;
-    body.add(head);
-
-    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.52, 16, 14), MATS.skin);
-    skull.scale.set(1, 0.97, 1);
-    head.add(skull);
-
-    const hat = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.62, 14), MATS.hat);
-    hat.position.y = 0.42;
-    head.add(hat);
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.07, 14), MATS.hat);
-    brim.position.y = 0.17;
-    head.add(brim);
-    const pom = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8), MATS.white);
-    pom.position.y = 0.79;
-    head.add(pom);
-
-    [-1, 1].forEach((s) => {
-      // 白眼球 + 黑瞳，避免糊成“墨镜”
-      const sclera = new THREE.Mesh(new THREE.SphereGeometry(0.155, 12, 10), MATS.white);
-      sclera.position.set(0.38, 0.06, s * 0.235);
-      sclera.scale.set(0.82, 1.0, 0.95);
-      head.add(sclera);
-      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.082, 10, 8), MATS.eye);
-      pupil.position.set(0.475, 0.055, s * 0.235);
-      pupil.scale.set(0.6, 1.05, 0.9);
-      head.add(pupil);
-      const sh = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 5), MATS.white);
-      sh.position.set(0.512, 0.12, s * 0.225);
-      head.add(sh);
-      const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), MATS.cheek);
-      cheek.position.set(0.33, -0.17, s * 0.3);
-      cheek.scale.set(0.5, 0.72, 1);
-      head.add(cheek);
-      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 6), MATS.skin);
-      ear.position.set(-0.04, -0.02, s * 0.5);
-      head.add(ear);
+    // 背带裤：胸片 + 两条肩带
+    const bib = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 12), MATS.pants);
+    bib.position.set(0.09, 0.84, 0);
+    bib.scale.set(0.72, 1.05, 0.84);
+    body.add(bib);
+    [-1, 1].forEach((sd) => {
+      const strap = new THREE.Mesh(new THREE.CapsuleGeometry(0.042, 0.24, 3, 6), MATS.pants);
+      strap.position.set(0.08, 1.26, sd * 0.23);
+      strap.rotation.z = -0.14;
+      body.add(strap);
     });
-    const mouth = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.028, 6, 12, Math.PI), MATS.eye);
-    mouth.position.set(0.455, -0.1, 0);
-    mouth.rotation.set(0, Math.PI / 2, Math.PI);
-    head.add(mouth);
 
-    // 背包
-    const pack = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), MATS.hat);
-    pack.position.set(-0.42, 1.02, 0);
-    pack.scale.set(0.8, 1, 0.95);
+    // ---------- 背包 ----------
+    const pack = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 10), MATS.pack);
+    pack.position.set(-0.34, 1.06, 0);
+    pack.scale.set(0.78, 1.0, 0.9);
     body.add(pack);
 
-    // 手臂
-    const arms = {};
-    [-1, 1].forEach((s) => {
+    // ---------- 围巾（遮住脖子接缝，还能飘） ----------
+    const scarfRing = new THREE.Mesh(new THREE.TorusGeometry(0.295, 0.098, 10, 24), MATS.scarf);
+    scarfRing.position.y = 1.40;
+    scarfRing.rotation.x = Math.PI / 2;
+    body.add(scarfRing);
+    const tails = [];
+    [-1, 1].forEach((sd) => {
       const pivot = new THREE.Group();
-      pivot.position.set(0.02, 1.22, s * 0.46);
-      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 0.32, 4, 8), MATS.skin);
-      arm.position.y = -0.24;
-      arm.castShadow = true;
-      pivot.add(arm);
-      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.135, 10, 8), MATS.skin);
-      hand.position.y = -0.5;
+      pivot.position.set(-0.28, 1.38, sd * 0.11);
+      const tail = new THREE.Mesh(new THREE.CapsuleGeometry(0.058, 0.26, 3, 6), MATS.scarf);
+      tail.position.y = -0.17;
+      pivot.add(tail);
+      pivot.rotation.z = -0.75 + sd * 0.08;
+      body.add(pivot);
+      tails.push(pivot);
+    });
+
+    // ---------- 头 ----------
+    const head = new THREE.Group();
+    head.position.set(0.02, 1.78, 0);
+    head.rotation.y = -0.63;
+    body.add(head);
+
+    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.50, 22, 18), MATS.skin);
+    skull.scale.set(1, 0.99, 1);
+    head.add(skull);
+
+    // 毛线帽：球冠 + 翻边 + 绒球（不再是交通锥）
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.525, 20, 14, 0, TAU, 0, Math.PI * 0.375), MATS.hat);
+    dome.position.y = 0.01;
+    head.add(dome);
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.487, 0.062, 10, 26), MATS.band);
+    band.position.y = 0.205;
+    band.rotation.x = Math.PI / 2;
+    head.add(band);
+    const pom = new THREE.Mesh(new THREE.SphereGeometry(0.135, 14, 10), MATS.band);
+    pom.position.y = 0.585;
+    head.add(pom);
+
+    // ---------- 五官 ----------
+    [-1, 1].forEach((sd) => {
+      const sclera = new THREE.Mesh(new THREE.SphereGeometry(0.148, 14, 12), MATS.white);
+      sclera.position.set(0.335, 0.0, sd * 0.19);
+      sclera.scale.set(0.72, 1.05, 0.96);
+      head.add(sclera);
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 10), MATS.eye);
+      pupil.position.set(0.412, -0.005, sd * 0.19);
+      pupil.scale.set(0.5, 1.0, 0.9);
+      head.add(pupil);
+      const glint = new THREE.Mesh(new THREE.SphereGeometry(0.032, 8, 6), MATS.white);
+      glint.position.set(0.45, 0.055, sd * 0.165);
+      head.add(glint);
+      const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), MATS.cheek);
+      cheek.position.set(0.3, -0.19, sd * 0.285);
+      cheek.scale.set(0.45, 0.62, 1.0);
+      head.add(cheek);
+      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 8), MATS.skin);
+      ear.position.set(-0.05, -0.06, sd * 0.485);
+      ear.scale.set(0.7, 1, 0.55);
+      head.add(ear);
+    });
+    // 张嘴笑（扁球，远看也读得出来）
+    const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 10), MATS.mouth);
+    mouth.position.set(0.428, -0.155, 0);
+    mouth.scale.set(0.30, 0.56, 0.92);
+    head.add(mouth);
+    const tongue = new THREE.Mesh(new THREE.SphereGeometry(0.062, 10, 8), MATS.cheek);
+    tongue.position.set(0.452, -0.185, 0);
+    tongue.scale.set(0.28, 0.42, 0.72);
+    head.add(tongue);
+
+    // ---------- 手臂（袖子 + 前臂 + 手） ----------
+    const arms = {};
+    [-1, 1].forEach((sd) => {
+      const pivot = new THREE.Group();
+      pivot.position.set(0.01, 1.24, sd * 0.395);
+      const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.125, 12, 10), MATS.shirt);
+      shoulder.position.y = -0.03;
+      pivot.add(shoulder);
+      const sleeve = new THREE.Mesh(new THREE.CapsuleGeometry(0.105, 0.16, 4, 10), MATS.shirt);
+      sleeve.position.y = -0.13;
+      pivot.add(sleeve);
+      const fore = new THREE.Mesh(new THREE.CapsuleGeometry(0.083, 0.16, 4, 10), MATS.skin);
+      fore.position.y = -0.34;
+      pivot.add(fore);
+      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.108, 12, 10), MATS.skin);
+      hand.position.y = -0.46;
       pivot.add(hand);
       body.add(pivot);
-      arms[s] = pivot;
+      arms[sd] = pivot;
     });
 
-    // 腿
+    // ---------- 腿（裤腿 + 靴子 + 鞋底） ----------
     const legs = {};
-    [-1, 1].forEach((s) => {
+    [-1, 1].forEach((sd) => {
       const pivot = new THREE.Group();
-      pivot.position.set(0, 0.55, s * 0.19);
-      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.115, 0.42, 8), MATS.pants);
-      leg.position.y = -0.22;
+      pivot.position.set(0, 0.62, sd * 0.165);
+      const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.103, 0.20, 4, 10), MATS.pants);
+      leg.position.y = -0.16;
       pivot.add(leg);
-      const shoe = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), MATS.shoe);
-      shoe.position.set(0.07, -0.46, 0);
-      shoe.scale.set(1.35, 0.72, 1);
-      pivot.add(shoe);
+      const boot = new THREE.Mesh(new THREE.SphereGeometry(0.135, 12, 10), MATS.shoe);
+      boot.position.set(0.055, -0.44, 0);
+      boot.scale.set(1.45, 0.88, 1.02);
+      pivot.add(boot);
+      const sole = new THREE.Mesh(new THREE.BoxGeometry(0.29, 0.055, 0.235), MATS.sole);
+      sole.position.set(0.055, -0.50, 0);
+      pivot.add(sole);
       body.add(pivot);
-      legs[s] = pivot;
+      legs[sd] = pivot;
     });
 
-    // 泡泡枪
-    const gun = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.62, 10), new THREE.MeshLambertMaterial({ color: 0xffc93c }));
-    gun.rotation.z = -Math.PI / 2.2;
-    gun.position.set(0.34, 0.98, 0.34);
+    // ---------- 玩具泡泡枪 ----------
+    const gun = new THREE.Group();
+    gun.position.set(0.26, 1.00, 0.32);
     body.add(gun);
-    const tip = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.05, 6, 12), new THREE.MeshLambertMaterial({ color: 0x8fe7ff }));
-    tip.position.set(0.66, 1.02, 0.34);
-    tip.rotation.y = Math.PI / 2;
-    body.add(tip);
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.075, 0.32, 12), MATS.gun);
+    barrel.rotation.z = -Math.PI / 2;
+    barrel.position.x = 0.17;
+    gun.add(barrel);
+    const muzzle = new THREE.Mesh(new THREE.TorusGeometry(0.132, 0.042, 8, 16), MATS.gunRing);
+    muzzle.position.x = 0.345;
+    muzzle.rotation.y = Math.PI / 2;
+    gun.add(muzzle);
+    const tank = new THREE.Mesh(new THREE.SphereGeometry(0.098, 14, 10), MATS.tank);
+    tank.position.set(0.15, 0.088, 0);
+    tank.scale.set(1.15, 1, 0.95);
+    gun.add(tank);
+    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.15, 0.095), MATS.gun);
+    grip.position.set(0.02, -0.10, 0);
+    gun.add(grip);
 
-    root.rotation.y = -0.34;
+    root.rotation.y = -0.42;
     root.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-    return { root: root, body: body, head: head, arms: arms, legs: legs, gun: gun, tip: tip };
+    return { root: root, body: body, head: head, arms: arms, legs: legs, gun: gun, muzzle: muzzle, tails: tails };
   }
 
   const P = buildPlayer();
@@ -780,7 +841,7 @@
           Sfx.pop();
           burst(s.x, yy, s.z, 9, 4.2, [0xffd93d, 0xffffff, 0xfff3c4]);
           _tmpV.set(s.x, yy, s.z);
-          floaty(_tmpV, '+1 ⭐');
+          floaty(_tmpV, '+1 ★');
         }
       }
     }
@@ -851,7 +912,7 @@
     onGround: true, jumps: 0,
     hearts: 3, stars: 0, shots: 0,
     invuln: 0, shield: 0, hurtFlash: 0,
-    fireCd: 0, runT: 0, walkPhase: 0, facing: 1, aimBackT: 0,
+    fireCd: 0, runT: 0, walkPhase: 0, facing: 1, aimBackT: 0, dustCd: 0,
     bossFight: false, bossDead: false, bossRef: null, bossHp: 0, bossTriggered: false,
     spawnCd: 2.0, t: 0, elapsed: 0, shake: 0,
     maxX: LEVEL_END, started: false, tipShown: true,
@@ -864,6 +925,7 @@
   /* ===================== 9. DOM ===================== */
   const $ = (id) => document.getElementById(id);
   const elHearts = Array.prototype.slice.call(document.querySelectorAll('#hearts .h'));
+  const elStars = $('stars');
   const elStar = $('starNum');
   const elBar = $('bar');
   const elDot = $('barDot');
@@ -874,6 +936,11 @@
   const elWin = $('win');
   const elHud = $('hud');
   const elPad = $('pad');
+  const elBossBar = $('bossBar');
+  const elBossFill = $('bossFill');
+  const elBtnSound = $('btnSound');
+  const elSoundUse = elBtnSound ? elBtnSound.querySelector('use') : null;
+  let starShown = 0;
 
   let msgTimer = 0;
   function showMsg(text, ms) {
@@ -903,14 +970,37 @@
       else h.classList.add('off');
     });
     elStar.textContent = String(G.stars);
+    // 星星变多时弹一下，孩子能立刻注意到“我捡到了”
+    if (G.stars > starShown && elStars) {
+      elStars.classList.remove('bump');
+      void elStars.offsetWidth;
+      elStars.classList.add('bump');
+    }
+    starShown = G.stars;
     const pct = clamp((G.x / LEVEL_END) * 100, 0, 100);
     elBar.style.width = pct + '%';
     elDot.style.left = pct + '%';
+    syncBossBar();
+  }
+
+  // 大王血条：只在开打时出现，打完立刻收起
+  function syncBossBar() {
+    if (!elBossBar) return;
+    const boss = G.bossRef;
+    const fighting = !!(G.bossFight && boss && !boss.dead);
+    elBossBar.classList.toggle('show', fighting);
+    if (!fighting) return;
+    const max = boss.maxHp || 26;
+    const hp = Math.max(0, Math.min(max, boss.hp));
+    const pct = (hp / max) * 100;
+    elBossFill.style.width = pct + '%';
+    elBossBar.classList.toggle('low', pct <= 34);
   }
 
   /* ===================== 10. 射击 / 伤害 / 击杀 ===================== */
   const _tmpV = new THREE.Vector3();
   const _tmpV2 = new THREE.Vector3();
+  const _white = new THREE.Color(0xffffff);
 
   function nearestEnemy() {
     let best = null, bestD = 1e9;
@@ -1002,6 +1092,8 @@
       G.bossDead = true;
       G.bossFight = false;
       G.bossRef = null;
+      G.bossHp = 0;
+      if (elBossFill) elBossFill.style.width = '0%';   // 血条先见底再收起
       G.maxX = LEVEL_END + 6;
       wallGroup.visible = false;
       G.shake = 1.0;
@@ -1014,7 +1106,7 @@
     } else {
       G.stars += 1;
       _tmpV.set(e.x, e.y + e.r * 1.6, e.z);
-      floaty(_tmpV, '+1 ⭐');
+      floaty(_tmpV, '+1 ★');
       syncHUD();
     }
   }
@@ -1086,7 +1178,7 @@
     else if (mv > 0) faceGoal = 1;
     else if (mv < 0) faceGoal = -1;
     G.facing = faceGoal;
-    const rotGoal = faceGoal > 0 ? -0.34 : Math.PI + 0.34;
+    const rotGoal = faceGoal > 0 ? -0.42 : Math.PI + 0.42;
     let diff = rotGoal - P.root.rotation.y;
     while (diff > Math.PI) diff -= TAU;
     while (diff < -Math.PI) diff += TAU;
@@ -1128,20 +1220,33 @@
     if (G.onGround) {
       P.legs[-1].rotation.z = sw * 0.62;
       P.legs[1].rotation.z = -sw * 0.62;
-      P.arms[-1].rotation.z = -sw * 0.55;
-      if (G.fireCd > FIRE_GAP * 0.35) P.arms[1].rotation.z = -0.9;
-      else P.arms[1].rotation.z = sw * 0.5;
+      P.arms[-1].rotation.z = sw * 0.42;
+      P.arms[1].rotation.z = -0.78 + sw * 0.07;   // 右手持枪
       P.body.position.y = Math.abs(sw2) * 0.055;
       P.body.rotation.z = sw * 0.045;
     } else {
       P.legs[-1].rotation.z = -0.55 + sw * 0.12;
       P.legs[1].rotation.z = 0.4;
       P.arms[-1].rotation.z = -1.5;
-      P.arms[1].rotation.z = -1.2;
+      P.arms[1].rotation.z = -1.15;
       P.body.position.y = 0;
       P.body.rotation.z = 0;
     }
     P.arms[1].rotation.x = damp(P.arms[1].rotation.x, 0, 9, dt);
+
+    // 围巾尾巴：跑动越快飘得越厉害，滞空时向上翻
+    const flutter = (mv !== 0 ? 1 : 0.45) * (G.onGround ? 1 : 1.6);
+    for (let ti = 0; ti < P.tails.length; ti++) {
+      const tl = P.tails[ti];
+      tl.rotation.z = -0.75 + Math.sin(G.t * 10 + ti * 1.7) * 0.16 * flutter + (G.onGround ? 0 : 0.34);
+      tl.rotation.x = Math.sin(G.t * 7.5 + ti * 2.1) * 0.14 * flutter;
+    }
+
+    // 枪口发光脉动
+    if (P.muzzle && P.muzzle.material) {
+      P.muzzle.material.emissiveIntensity = 0.35 + Math.sin(G.t * 4) * 0.12 + (G.fireCd > FIRE_GAP * 0.6 ? 0.5 : 0);
+    }
+
 
     // 无敌闪烁 / 保护泡
     if (G.invuln > 0) {
@@ -1163,7 +1268,7 @@
     }
 
     // 头顶朝向：略微看镜头
-    P.head.rotation.y = -0.62 + Math.sin(G.t * 0.9) * 0.06;
+    P.head.rotation.y = -0.63 + Math.sin(G.t * 0.9) * 0.05;
   }
 
   function updateBubbles(dt) {
@@ -1189,7 +1294,7 @@
         if (dx * dx + dy * dy + dz * dz < rr * rr) {
           hit = true;
           e.hp -= 1;
-          e.hitT = 0.16;
+          e.hitT = e.boss ? 0.1 : 0.16;
           burst(b.mesh.position.x, b.mesh.position.y, b.mesh.position.z, 5, 3.2, [0xffffff, 0xd8f6ff]);
           if (e.boss) { G.bossHp = Math.max(0, e.hp); G.shake = Math.max(G.shake, 0.18); }
           if (e.hp <= 0) killEnemy(e, k);
@@ -1250,13 +1355,15 @@
       const targetYaw = Math.atan2(_blend.x, _blend.z);
       e.root.rotation.y = damp(e.root.rotation.y, targetYaw, 6, dt);
 
-      // 受击闪烁
+      // 受击闪烁：亮一下就好，不要整只变白（连发时否则一直是白团）
       if (e.hitT > 0) {
         e.hitT -= dt;
-        e.mat.emissive = new THREE.Color(0xffffff);
-        e.mat.emissiveIntensity = 1.1;
-        e.mat.color.setHex(0xffffff);
-        if (e.hitT <= 0) { e.mat.emissiveIntensity = 0; e.mat.color.setHex(e.color); }
+        const k = Math.max(0, e.hitT / 0.16);
+        if (!e.baseColor) e.baseColor = new THREE.Color(e.color);
+        e.mat.emissive.copy(_white);
+        e.mat.emissiveIntensity = 0.06 + k * 0.26;
+        e.mat.color.copy(e.baseColor).lerp(_white, 0.16 + k * 0.30);
+        if (e.hitT <= 0) { e.mat.emissiveIntensity = 0; e.mat.color.copy(e.baseColor); }
       }
 
       // 撞到玩家
@@ -1394,6 +1501,7 @@
     elHud.classList.add('hide');
     elPad.classList.add('hide');
     elTip.classList.add('hide');
+    elMsg.classList.remove('show');   // 别让“彩虹门打开啦”留在结算面板背后
     for (let k = 0; k < 10; k++) {
       setTimeout(() => {
         burst(rnd(G.x - 5, G.x + 8), rnd(3, 8), rnd(-6, 6), 22, 10);
@@ -1447,6 +1555,7 @@
     elWin.classList.add('gone');
     elHud.classList.remove('hide');
     elPad.classList.remove('hide');
+    elTip.classList.remove('hide');
     showMsg('出发啦！');
     Sfx.say('出发啦，去找彩虹门');
     setTimeout(() => {
@@ -1466,6 +1575,7 @@
     Sfx.musicStart();
     elHud.classList.remove('hide');
     elPad.classList.remove('hide');
+    elTip.classList.remove('hide');
     showMsg('再来一次！');
     setTimeout(() => elTip.classList.add('hide'), 3000);
   }
@@ -1497,11 +1607,16 @@
 
   $('btnStart').addEventListener('click', (e) => { e.preventDefault(); startGame(); });
   $('btnReplay').addEventListener('click', (e) => { e.preventDefault(); replay(); });
-  $('btnSound').addEventListener('click', (e) => {
+  elBtnSound.addEventListener('click', (e) => {
     e.preventDefault();
     const m = Sfx.toggleMute();
-    $('btnSound').textContent = m ? '🔇' : '🔊';
-    $('btnSound').classList.toggle('muted', m);
+    if (elSoundUse) {
+      const id = m ? '#i-mute' : '#i-vol';
+      elSoundUse.setAttribute('href', id);
+      elSoundUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', id);
+    }
+    elBtnSound.classList.toggle('muted', m);
+    elBtnSound.setAttribute('aria-label', m ? '打开声音' : '关闭声音');
   });
   $('btnAgain').addEventListener('click', (e) => {
     e.preventDefault();
@@ -1604,6 +1719,7 @@
     updateParticles(dt);
     updateCamera(dt);
     checkWin();
+    syncBossBar();
 
     // 场景动态元素
     clouds.position.x = Math.sin(G.t * 0.02) * 6;
@@ -1677,6 +1793,7 @@
         updateParticles(h);
         updateCamera(h);
         checkWin();
+        syncBossBar();
       }
       Sfx.schedule();
       renderer.render(scene, camera);

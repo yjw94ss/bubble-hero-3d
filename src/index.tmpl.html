@@ -14,36 +14,69 @@
 <body>
 <canvas id="c"></canvas>
 
-<div id="hud">
+<!-- 图标精灵：全部内联 SVG，不依赖系统 emoji 字体 -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></symbol>
+  <symbol id="i-again" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-8 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M16.5 3.6 6.6 12l9.9 8.4z"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M7.5 3.6 17.4 12 7.5 20.4z"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 2.6 21 12h-5.4v8.4H8.4V12H3z"/></symbol>
+  <symbol id="i-bubble" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor"/><circle cx="8.6" cy="8.4" r="3" fill="#fff" opacity=".85"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 6.8l4.4 3.2L12 3l4.6 7 4.4-3.2-2.1 12.4H5.1z"/></symbol>
+  <symbol id="i-monster" viewBox="0 0 24 24"><path d="M12 2.6c-5.2 0-9.4 4-9.4 9.1 0 3 .8 5.3-1 7.9 2.4.4 4-.6 4.9-1.5 1.6 1 3.5 1.6 5.5 1.6 5.2 0 9.4-4 9.4-9.1S17.2 2.6 12 2.6z"/><circle cx="8.6" cy="10" r="1.6" fill="#fff"/><circle cx="15.4" cy="10" r="1.6" fill="#fff"/></symbol>
+  <symbol id="i-rainbow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 19.2a9 9 0 0 1 18 0"/><path d="M6.6 19.2a5.4 5.4 0 0 1 10.8 0"/><path d="M10.2 19.2a1.8 1.8 0 0 1 3.6 0"/></g></symbol>
+</svg>
+
+<div id="hud" class="hide">
   <div id="hearts">
-    <span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span>
+    <span class="h"><svg class="ico"><use href="#i-heart"/></svg></span>
+    <span class="h"><svg class="ico"><use href="#i-heart"/></svg></span>
+    <span class="h"><svg class="ico"><use href="#i-heart"/></svg></span>
   </div>
   <div id="mid">
-    <div id="stars">⭐ <b id="starNum">0</b></div>
-    <div id="barWrap">
-      <div id="bar"></div>
-      <div id="barDot"></div>
-      <div id="barGoal">🏁</div>
+    <div id="hudline">
+      <div id="stars"><svg class="ico"><use href="#i-star"/></svg><b id="starNum">0</b></div>
+      <div id="barWrap">
+        <div id="bar"><i></i></div>
+        <div id="barDot"></div>
+      </div>
+      <div id="barGoal"><svg class="ico"><use href="#i-flag"/></svg></div>
     </div>
   </div>
   <div id="topRight">
-    <button class="btn icon-btn" id="btnSound" aria-label="声音">🔊</button>
-    <button class="btn icon-btn" id="btnAgain" aria-label="重来">↻</button>
+    <button class="btn icon-btn" id="btnSound" aria-label="声音"><svg class="ico"><use href="#i-vol"/></svg></button>
+    <button class="btn icon-btn" id="btnAgain" aria-label="重来"><svg class="ico"><use href="#i-again"/></svg></button>
   </div>
+</div>
+
+<div id="bossBar">
+  <div class="boss-title"><svg class="ico"><use href="#i-crown"/></svg><span>大王</span></div>
+  <div class="boss-track"><div id="bossFill"></div></div>
 </div>
 
 <div id="msg"></div>
 <div id="flash"></div>
-<div id="tip">按住 ⤒ 跳跃 · 点 💧 发射泡泡</div>
+<div id="tip" class="hide">
+  <svg class="ico"><use href="#i-up"/></svg><em>跳跃</em>
+  <span>·</span>
+  <svg class="ico"><use href="#i-bubble"/></svg><em>发射泡泡</em>
+</div>
 
-<div id="pad">
+<div id="pad" class="hide">
   <div>
-    <button class="btn pad-btn" id="btnLeft" aria-label="向左">◀</button>
-    <button class="btn pad-btn" id="btnRight" aria-label="向右">▶</button>
+    <button class="btn pad-btn" id="btnLeft" aria-label="向左"><svg class="ico"><use href="#i-left"/></svg></button>
+    <button class="btn pad-btn" id="btnRight" aria-label="向右"><svg class="ico"><use href="#i-right"/></svg></button>
   </div>
   <div>
-    <button class="btn pad-btn" id="btnJump" aria-label="跳跃">⤒</button>
-    <button class="btn" id="btnFire" aria-label="发射泡泡">💧<small>发射</small></button>
+    <button class="btn pad-btn" id="btnJump" aria-label="跳跃"><svg class="ico"><use href="#i-up"/></svg></button>
+    <button class="btn fire-btn" id="btnFire" aria-label="发射泡泡">
+      <svg class="ico"><use href="#i-bubble"/></svg>
+      <small>发射</small>
+    </button>
   </div>
 </div>
 
@@ -53,9 +86,9 @@
     <div class="title">泡泡<em>小勇士</em></div>
   </div>
   <div class="rules">
-    <div class="rule"><i>💧</i>点点泡泡枪</div>
-    <div class="rule"><i>👾</i>把小怪兽变成星星</div>
-    <div class="rule"><i>🌈</i>跑到彩虹门就赢啦</div>
+    <div class="rule"><svg class="ico"><use href="#i-bubble"/></svg><span>按住打泡泡</span></div>
+    <div class="rule"><svg class="ico"><use href="#i-monster"/></svg><span>把怪兽变成星星</span></div>
+    <div class="rule"><svg class="ico"><use href="#i-rainbow"/></svg><span>跑到彩虹门</span></div>
   </div>
   <div id="rotateHint">↔ 横过来拿着，看得更清楚哦</div>
   <button class="btn big-btn" id="btnStart">开 始 玩</button>
