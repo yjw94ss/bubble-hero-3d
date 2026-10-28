@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#8fdcff">
+<title>泡泡小勇士 · 3D 大冒险</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div id="hearts">
+    <span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span>
+  </div>
+  <div id="mid">
+    <div id="stars">⭐ <b id="starNum">0</b></div>
+    <div id="barWrap">
+      <div id="bar"></div>
+      <div id="barDot"></div>
+      <div id="barGoal">🏁</div>
+    </div>
+  </div>
+  <div id="topRight">
+    <button class="btn icon-btn" id="btnSound" aria-label="声音">🔊</button>
+    <button class="btn icon-btn" id="btnAgain" aria-label="重来">↻</button>
+  </div>
+</div>
+
+<div id="msg"></div>
+<div id="flash"></div>
+<div id="tip">按住 ⤒ 跳跃 · 点 💧 发射泡泡</div>
+
+<div id="pad">
+  <div>
+    <button class="btn pad-btn" id="btnLeft" aria-label="向左">◀</button>
+    <button class="btn pad-btn" id="btnRight" aria-label="向右">▶</button>
+  </div>
+  <div>
+    <button class="btn pad-btn" id="btnJump" aria-label="跳跃">⤒</button>
+    <button class="btn" id="btnFire" aria-label="发射泡泡">💧<small>发射</small></button>
+  </div>
+</div>
+
+<div class="screen" id="intro">
+  <div class="title-box">
+    <div class="sub">泡 泡 大 冒 险</div>
+    <div class="title">泡泡<em>小勇士</em></div>
+  </div>
+  <div class="rules">
+    <div class="rule"><i>💧</i>点点泡泡枪</div>
+    <div class="rule"><i>👾</i>把小怪兽变成星星</div>
+    <div class="rule"><i>🌈</i>跑到彩虹门就赢啦</div>
+  </div>
+  <div id="rotateHint">↔ 横过来拿着，看得更清楚哦</div>
+  <button class="btn big-btn" id="btnStart">开 始 玩</button>
+</div>
+
+<div class="screen gone" id="win">
+  <div class="title-box">
+    <div class="sub">你 做 到 了</div>
+    <div class="title">太棒啦<em>！</em></div>
+  </div>
+  <div class="win-stats">
+    <div><span>星星</span><b id="winStars">0</b></div>
+    <div><span>泡泡</span><b id="winPops">0</b></div>
+    <div><span>用时</span><b id="winTime">0s</b></div>
+  </div>
+  <button class="btn big-btn" id="btnReplay">再 玩 一 次</button>
+</div>
+
+<script>
+/*__THREE__*/
+</script>
+<script>
+/*__GAME__*/
+</script>
+</body>
+</html>

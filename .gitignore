@@ -1,0 +1,12 @@
+# 验收脚本与截图（19MB，不随仓库发布）
+qa/
+
+# 构建产物（index.html 才是发布入口）
+dist/
+
+# macOS
+.DS_Store
+._*
+
+# 本地工程笔记（不发布）
+.workbuddy/
